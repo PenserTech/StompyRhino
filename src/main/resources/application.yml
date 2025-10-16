@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: stompy-rhino-api
+  security:
+    user:
+      name: user
+      password: password
+      roles: READER
