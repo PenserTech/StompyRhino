@@ -1,0 +1,114 @@
+@startuml
+' skinparam to improve readability
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+!theme vibrant
+
+title Domain Model
+
+package "Domain" {
+    package "Security" {
+        interface "Principal" as Principal
+        record "UserPrincipal" implements Principal {
+            + userId: String
+        }
+        record "GroupPrincipal" implements Principal {
+            + groupId: String
+        }
+        record "RolePrincipal" implements Principal {
+            + roleName: String
+        }
+
+        enum "Permission" {
+            READ
+            WRITE
+            DELETE
+            OWNER
+        }
+
+        record "AccessRule" {
+            + principal: Principal
+            + permission: Permission
+        }
+
+        record "AccessControlList" {
+            + rules: Set<AccessRule>
+        }
+        AccessControlList o--> AccessRule
+        AccessRule o--> Principal
+        AccessRule o--> Permission
+    }
+
+    interface "Resource" {
+        + id(): UUID
+        + name(): String
+        + mimeType(): String
+        + sizeBytes(): long
+        + location(): URI
+        + projects(): Set<ProjectId>
+        + acl(): AccessControlList
+        + metadata(): ResourceMetadata
+        + createdAt(): Instant
+        + updatedAt(): Instant
+    }
+
+    record "ResourceMetadata" {
+      + createdBy: String
+      + owner: String
+      + attributes: Map<String, String>
+    }
+
+    record "ProjectId" {
+      + value: UUID
+    }
+
+    Resource o--> ResourceMetadata
+    Resource o--> ProjectId
+    Resource o--> AccessControlList
+
+    package "Resource Implementations" {
+        record "BlogPost" implements Resource {
+            {field} + id: UUID
+            {field} + name: String
+            ...
+            {field} + title: String
+            {field} + body: String
+            {field} + author: String
+        }
+
+        record "ImageFile" implements Resource {
+            {field} + id: UUID
+            {field} + name: String
+            ...
+            {field} + width: int
+            {field} + height: int
+        }
+
+        record "AudioFile" implements Resource {
+            {field} + id: UUID
+            {field}
+            ...
+            {field} + duration: Duration
+            {field} + bitrateKbps: int
+            {field} + codec: String
+        }
+
+        record "VideoFile" implements Resource {
+            {field} + id: UUID
+            {field} + name: String
+            ...
+            {field} + duration: Duration
+            {field} + resolution: String
+        }
+
+        record "PdfFile" implements Resource {
+            {field} + id: UUID
+            {field} + name: String
+            ...
+            {field} + title: String
+            {field} + body: String
+            {field} + author: String
+        }
+    }
+}
+@enduml

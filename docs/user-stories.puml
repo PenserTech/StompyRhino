@@ -1,0 +1,44 @@
+@startuml
+!theme vibrant
+
+title Resource Management System - Use Cases
+
+left to right direction
+
+' Define Actors for each role
+actor "Reader" as Reader
+actor "Author" as Author
+actor "Editor" as Editor
+actor "Admin" as Admin
+
+' Show role inheritance
+Reader <|-- Author
+Author <|-- Editor
+Editor <|-- Admin
+
+rectangle "Resource API" {
+  ' Define Use Cases
+  usecase "(UC1)\nView Resources" as UC1
+  usecase "(UC2)\nRead Comments" as UC2
+  usecase "(UC3)\nAdd Comment" as UC3
+  usecase "(UC4)\nCreate Resource" as UC4
+  usecase "(UC5)\nUpdate Resource" as UC5
+  usecase "(UC6)\nDelete Resource" as UC6
+  usecase "(UC7)\nManage Permissions" as UC7
+
+  ' Connect actors to their allowed use cases
+  Reader --> UC1
+  Reader --> UC2
+
+  Author --> UC3
+  Author --> UC4
+
+  Editor --> UC5
+
+  Admin --> UC6
+  Admin --> UC7
+}
+
+note right of (UC5) : An Author can also update a resource\nif they are the 'owner'.
+
+@enduml
